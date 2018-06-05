@@ -7,7 +7,7 @@ use NotificationChannels\Tww\Exceptions\CouldNotSendNotification;
 
 class Tww
 {
-    /** @var SoapClient SOAP Client */
+    /** @var \SoapClient SOAP Client */
     protected $soap;
 
     /** @var null|string conta da TWW. */
@@ -38,7 +38,7 @@ class Tww
     /**
      * Get SoapClient.
      *
-     * @return SoapClient
+     * @return \SoapClient
      */
     protected function soapClient()
     {
@@ -68,12 +68,13 @@ class Tww
                 return;
             }
 
-            return $this->soapClient()->EnviaSMS([
+            return $this->soapClient()->EnviaSMSConcatenadoComAcento([
                 'NumUsu'   => config('services.tww.conta'),
                 'Senha'    => config('services.tww.senha'),
                 'SeuNum'   => $params['from'] ?: $this->from,
+                'Serie'    => 0,
                 'Celular'  => $to,
-                'Mensagem' => Str::limit($params['msg'], 160),
+                'Mensagem' => Str::limit($params['msg'], 2048),
             ]);
 
         } catch (\SoapFault $exception) {
